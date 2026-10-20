@@ -13,21 +13,29 @@ public class TipoCambioService(ITipoCambioRepository repo, IUnitOfWork uow) : IT
     public async Task<TipoCambioDto> GetByIdAsync(int id) =>
         ToDto(await repo.GetByIdAsync(id) ?? throw new NotFoundException($"Tipo de cambio {id} no existe."));
 
-    public Task<TipoCambioDto> CreateAsync(TipoCambioRequest r) =>
-        uow.ExecuteInTransactionAsync(async () =>
+    public async Task<TipoCambioDto> CreateAsync(TipoCambioRequest r)
+    {
+        var entity = await uow.ExecuteInTransactionAsync(async () =>
         {
             var (origen, destino) = Validar(r);
             if (await repo.GetByParAsync(origen, destino) is not null)
                 throw new ConflictException($"Ya existe el tipo de cambio {origen}->{destino}.");
 
-            var entity = new TipoCambio
+            var nuevo = new TipoCambio
             {
-                MonedaOrigen = origen, MonedaDestino = destino,
-                Tasa = r.Tasa, FechaActualizacion = DateTime.UtcNow
+                MonedaOrigen = origen, 
+                MonedaDestino = destino,
+                Tasa = r.Tasa, 
+                FechaActualizacion = DateTime.UtcNow
             };
-            await repo.AddAsync(entity);
-            return ToDto(entity);
+            await repo.AddAsync(nuevo);
+            return nuevo;
         });
+
+        return ToDto(entity);
+
+    }
+       
 
     public Task<TipoCambioDto> UpdateAsync(int id, TipoCambioRequest r) =>
         uow.ExecuteInTransactionAsync(async () =>
