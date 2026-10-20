@@ -48,6 +48,8 @@ Arquitectura en capas con dependencias hacia adentro: `Api → Application → D
 docker compose up --build
 ```
 
+No necesitas configurar nada: el compose usa una clave JWT de desarrollo. Para usar la tuya, define `JWT_KEY` en un archivo `.env`.
+
 | Servicio | URL |
 |---|---|
 | Front Angular | http://localhost:4200 |
@@ -58,10 +60,22 @@ docker compose up --build
 
 Requisitos: .NET 10 SDK y Node.js 22.
 
-```bash
-# Backend (el front espera la API en el puerto 8080)
-dotnet run --project backend/CambioMoneda.Api --urls http://localhost:8080
+**Windows (PowerShell):**
 
+```PowerShell
+# Backend (PowerShell). Define la clave JWT y levanta la API en el puerto 8080
+$env:Jwt__Key = "clave-solo-para-desarrollo-local-0123456789-abc"
+dotnet run --project backend/CambioMoneda.Api --urls http://localhost:8080
+```
+
+**Linux / macOS (bash o zsh):**
+
+```bash
+export Jwt__Key="clave-solo-para-desarrollo-local-0123456789-abc"
+dotnet run --project backend/CambioMoneda.Api --urls http://localhost:8080
+```
+
+```bash
 # Frontend
 cd frontend
 npm install
@@ -159,6 +173,5 @@ El workflow `.github/workflows/ci.yml` se ejecuta en cada push a main y en cada 
 
 ## Limitaciones conocidas
 
-- La clave JWT y las credenciales de prueba están en `appsettings.json` por simplicidad; en un entorno real irían en variables de entorno o un gestor de secretos (la clave se puede sobrescribir con `Jwt__Key`).
 - No hay gestión de usuarios ni roles.
 - La base SQLite vive dentro del contenedor, así que se reinicia si se elimina.
