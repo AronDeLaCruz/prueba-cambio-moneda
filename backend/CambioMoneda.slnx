@@ -3,4 +3,5 @@
   <Project Path="CambioMoneda.Application/CambioMoneda.Application.csproj" />
   <Project Path="CambioMoneda.Domain/CambioMoneda.Domain.csproj" />
   <Project Path="CambioMoneda.Infrastructure/CambioMoneda.Infrastructure.csproj" />
+  <Project Path="CambioMoneda.Tests/CambioMoneda.Tests.csproj" />
 </Solution>
