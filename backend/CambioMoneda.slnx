@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="CambioMoneda.Api/CambioMoneda.Api.csproj" />
+  <Project Path="CambioMoneda.Application/CambioMoneda.Application.csproj" />
+  <Project Path="CambioMoneda.Domain/CambioMoneda.Domain.csproj" />
+  <Project Path="CambioMoneda.Infrastructure/CambioMoneda.Infrastructure.csproj" />
+</Solution>
