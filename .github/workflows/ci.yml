@@ -49,9 +49,9 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ghcr.io/${{ github.repository }}/api:latest
+          tags: ghcr.io/arondelacruz/prueba-cambio-moneda/api:latest
       - uses: docker/build-push-action@v6
         with:
           context: ./frontend
           push: true
-          tags: ghcr.io/${{ github.repository }}/web:latest
+          tags: ghcr.io/arondelacruz/prueba-cambio-moneda/web:latest

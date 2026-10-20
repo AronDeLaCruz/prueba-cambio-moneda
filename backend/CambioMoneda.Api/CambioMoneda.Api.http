@@ -1,6 +1,0 @@
-@CambioMoneda.Api_HostAddress = http://localhost:5288
-
-GET {{CambioMoneda.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
