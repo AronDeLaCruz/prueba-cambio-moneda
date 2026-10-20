@@ -119,10 +119,18 @@ Los errores de negocio pasan por el middleware y salen siempre con la misma form
 | Código | Cuándo |
 |---|---|
 | 400 | Datos inválidos (monto ≤ 0, monedas mal formadas, tasa ≤ 0, monedas iguales) |
-| 401 | Falta el token, es inválido o expiró |
+| 401 | Falta el token, es inválido o expiró (lo responde la autenticación JWT, sin cuerpo) |
 | 404 | El tipo de cambio o el par de monedas no existe |
 | 409 | Ya existe un tipo de cambio para ese par |
 | 500 | Error inesperado (se registra en logs; al cliente solo le llega un mensaje genérico) |
+
+## Pruebas
+
+```bash
+dotnet test backend
+```
+
+Tests unitarios de `ConversionService` (xUnit + NSubstitute): tasa directa, tasa inversa, redondeo, normalización de monedas y validaciones. El repositorio se simula, así que no necesitan base de datos.
 
 ## Decisiones de diseño
 
@@ -132,7 +140,7 @@ Los errores de negocio pasan por el middleware y salen siempre con la misma form
 - **`decimal` para dinero**: evita errores de redondeo de `double`; la tasa se guarda con precisión (18,6).
 - **Índice único (origen, destino)**: garantiza a nivel de base de datos que no haya pares duplicados.
 - **Transacciones en el CRUD**: crear, actualizar y eliminar se ejecutan dentro de `ExecuteInTransactionAsync`, con rollback si algo falla.
-- **Códigos de moneda normalizados**: se recortan y pasan a mayúsculas en front y backend.
+- **Códigos de moneda normalizados**: se normalizan en backend (y el front las pasa a mayúsculas).
 - **Usuario fijo en configuración**: el enunciado no pide gestión de usuarios, así que el login valida contra `appsettings.json`.
 - **Swagger habilitado en todos los entornos**: facilita la evaluación; en producción lo restringiría.
 - **Front**: el interceptor agrega el JWT a cada petición, un guard protege las rutas, y otro interceptor limpia la sesión ante un 401. El token se guarda en `localStorage` junto con su fecha de expiración.
@@ -143,7 +151,7 @@ Importa `postman/CambioMoneda.postman_collection.json`. Trae las variables `base
 
 ## CI/CD
 
-El workflow `.github/workflows/ci.yml` se ejecuta en cada push y pull request:
+El workflow `.github/workflows/ci.yml` se ejecuta en cada push a main y en cada pull request:
 
 1. **backend**: restaura, compila y ejecuta los tests de .NET.
 2. **frontend**: instala dependencias y compila Angular.
