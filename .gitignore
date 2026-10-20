@@ -22,3 +22,4 @@ Thumbs.db
 
 # Secretos locales
 .env
+!.env.example

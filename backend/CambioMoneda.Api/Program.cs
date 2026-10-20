@@ -12,8 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
+    throw new InvalidOperationException(
+        "Falta Jwt:Key (mínimo 32 caracteres). Defínela como variable de entorno Jwt__Key.");
+        
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi(o => o.AddDocumentTransformer<BearerSecuritySchemeTransformer>());builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddOpenApi(o => o.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(o => o.TokenValidationParameters = new TokenValidationParameters
@@ -54,7 +61,7 @@ app.UseSwaggerUI(o =>
 
 app.UseCors("Angular");
 
-app.UseAuthentication();//UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 

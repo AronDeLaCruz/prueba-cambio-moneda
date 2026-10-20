@@ -3,7 +3,7 @@ services:
     build: ./backend
     ports: ["8080:8080"]
     environment:
-      Jwt__Key: "clave-super-secreta-de-al-menos-32-caracteres-123"
+      Jwt__Key: ${JWT_KEY:-clave-super-secreta-de-al-menos-32-caracteres-123} #""
       Cors__Origin: "http://localhost:4200"
   web:
     build: ./frontend
